@@ -21,7 +21,7 @@ def init_db():
 
     g.base = declarative_base()
     g.base.query = g.db_session.query_property()
-    import src.model.User
+    import src.model
     g.base.metadata.create_all(bind=engine)
 
 def close_db(e=None):
@@ -39,7 +39,7 @@ def init_migrate(app):
     )
     app.config['SQLALCHEMY_DATABASE_URI'] = url_object
     db = SQLAlchemy(app)
-    migrate = Migrate(app, db)
+    migrate = Migrate(app, db, directory=current_app.config['MIGRATE_DIRECTORY'])
 
 def init_app(app):
     app.teardown_appcontext(close_db)
