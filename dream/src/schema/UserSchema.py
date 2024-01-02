@@ -5,8 +5,4 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_instance = True
-
-    id = auto_field()
-    name = auto_field()
-    email = auto_field()
-    password = auto_field()
+        fields = ['first_name','middle_name', 'last_name', 'mobile', 'email', 'password', 'registered_at', 'last_login', 'intro', 'profile']

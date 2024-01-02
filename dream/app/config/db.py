@@ -21,7 +21,7 @@ def init_db():
 
     g.base = declarative_base()
     g.base.query = g.db_session.query_property()
-    import src.model.User
+    import src.model
     g.base.metadata.create_all(bind=engine)
 
 def close_db(e=None):
