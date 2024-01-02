@@ -39,7 +39,7 @@ def init_migrate(app):
     )
     app.config['SQLALCHEMY_DATABASE_URI'] = url_object
     db = SQLAlchemy(app)
-    migrate = Migrate(app, db)
+    migrate = Migrate(app, db, directory=current_app.config['MIGRATE_DIRECTORY'])
 
 def init_app(app):
     app.teardown_appcontext(close_db)
