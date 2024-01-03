@@ -1,9 +1,10 @@
 import os
 from flask import Flask, jsonify
 from app.config import db
+from app.config import middleware
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_path=f'{os.path.dirname(os.path.dirname(__file__))}/instance', instance_relative_config=True)
+    app = Flask('dream', instance_path=f'{os.path.dirname(os.path.dirname(__file__))}/instance', instance_relative_config=True)
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
@@ -17,8 +18,12 @@ def create_app(test_config=None):
 
     with app.app_context():
         db.init_app(app)
+        middleware.manage_jwt(app)
 
     from src.api import user
+    from src import auth
+
+    app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
 
     return app

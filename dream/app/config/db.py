@@ -5,24 +5,27 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 def init_db():
-    url_object = URL.create(
-        "postgresql+psycopg2",
-        username= current_app.config['DATABASE_USER'],
-        password= current_app.config['DATABASE_PASSWORD'],
-        host = current_app.config['DATABASE_HOST'],
-        database = current_app.config['DATABASE_NAME']
-    )
+    if 'db_session' not in g:
+        url_object = URL.create(
+            "postgresql+psycopg2",
+            username= current_app.config['DATABASE_USER'],
+            password= current_app.config['DATABASE_PASSWORD'],
+            host = current_app.config['DATABASE_HOST'],
+            database = current_app.config['DATABASE_NAME']
+        )
 
-    engine = create_engine(url_object)
+        engine = create_engine(url_object)
 
-    g.db_session  = scoped_session(sessionmaker(autocommit=False,
-                                    autoflush=False,
-                                    bind=engine))
+        g.db_session  = scoped_session(sessionmaker(autocommit=False,
+                                        autoflush=False,
+                                        bind=engine))
 
-    g.base = declarative_base()
-    g.base.query = g.db_session.query_property()
-    import src.model
-    g.base.metadata.create_all(bind=engine)
+        g.base = declarative_base()
+        g.base.query = g.db_session.query_property()
+        import src.model
+        g.base.metadata.create_all(bind=engine)
+
+    return g.db_session
 
 def close_db(e=None):
     db = g.pop('db_session', None)
