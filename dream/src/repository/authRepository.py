@@ -16,3 +16,7 @@ class AuthRepository():
         except IntegrityError:
             self.dbs.rollback()
             raise EmailExists
+
+    def login(self, email):
+        user = User.query.filter_by(email=email).scalar()
+        return user
